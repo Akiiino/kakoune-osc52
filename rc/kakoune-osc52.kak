@@ -87,10 +87,13 @@ define-command osc52-sync-get -docstring 'get system clipboard into the " regist
     }
 }
 
-define-command -hidden osc52-sync-get-deferred -docstring "set a reminder to get clipboard" %{
+define-command -hidden osc52-sync-get-deferred -docstring "set a reminder to get clipboard and try to trigger immediately" %{
     set-option window osc52_sync_deferred true
-}
 
+    # this key combitation should do nothing except trigger NormalIdle if we're already in normal mode
+    # yes, this is a horrifying hack
+    exec -with-hooks "<c-a-[>"
+}
 define-command -hidden osc52-sync-check-deferred -docstring "if the reminder is set, get the clipboard" %{
     evaluate-commands %sh{
         if [ "$kak_opt_osc52_sync_deferred" = "true" ]; then
