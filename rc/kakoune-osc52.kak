@@ -47,7 +47,7 @@ define-command -hidden -params 1 osc52-sync-capture %{
         # clean up mappings after the timeout
         (
             sleep "$kak_opt_osc52_sync_paste_timeout"
-            printf 'eval -client %%{%s} %%{%s}\n' \
+            printf 'evaluate-commands -client %%{%s} %%{%s}\n' \
                 "$kak_client" 'osc52-sync-uninstall-paste-mappings; set-option window osc52_sync_paste_pending false' |
                 kak -p "$kak_session"
         ) &
@@ -56,7 +56,7 @@ define-command -hidden -params 1 osc52-sync-capture %{
         osc52() {
             decoded=$(printf '%s' "$1" | base64 --decode)
             quoted_decoded=$(printf '%s' "$decoded" | sed "s/'/''''/g")
-            printf "eval -client '%s' 'osc52-sync-paste-recv ''%s'''\n" \
+            printf "evaluate-commands -client '%s' 'osc52-sync-paste-recv ''%s'''\n" \
                 "$kak_client" "$quoted_decoded" |
                 kak -p "$kak_session"
         }
@@ -92,7 +92,7 @@ define-command -hidden osc52-sync-get-deferred -docstring "set a reminder to get
 
     # this key combitation should do nothing except trigger NormalIdle if we're already in normal mode
     # yes, this is a horrifying hack
-    exec -with-hooks "<c-a-[>"
+    execute-keys -with-hooks "<c-a-[>"
 }
 define-command -hidden osc52-sync-check-deferred -docstring "if the reminder is set, get the clipboard" %{
     evaluate-commands %sh{
